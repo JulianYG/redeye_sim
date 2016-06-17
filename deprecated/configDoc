@@ -1,0 +1,22 @@
+Redeye predictions are based on validation dataset.
+
+Makefile will generate the path files in configs, and call src helpers to modify paths in certain scripts.
+Everything must strictly follow this hierarchy.
+Modify files:
+model files: solver.prototxt train_val.prototxt deploy.prototxt(if has one) must be under the same folder with full path specified in config.
+Need to specify the caffe folder directory as well, if want caffe and this folder separated.
+
+To compile with new layers:
+~/caffe/build/src/caffe/proto/caffe.pb.h ( this is already built file. modify proto instead )
+~/caffe/src/caffe/layer_factory.cpp ( this can be a choice to modify as well )
+~/caffe/src/caffe/proto/caffe.proto
+~/caffe/include/caffe/layers/noise_layer.hpp & energy_loss_layer.hpp
+~/caffe/src/caffe/layers/noise_layer.cpp & noise_layer.cu & energy_loss...
+
+To compile, make sure CXXFLAGS and NVCCFLAGS are using correct CXX lib in Makefile:
+CXXFLAGS += -MMD -MP -std=c++11
+NVCCFLAGS += ... -std=c++11
+PY(PROJECT)-SO: $(Q)$(CXX) -std=c++11 -shared -o ...
+
+
+After make pycaffe, copy the python/caffe directory to the python module path: /usr/lib/python2.7

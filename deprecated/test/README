@@ -1,0 +1,59 @@
+CHANGE setup_example.py to setup.py, 
+point configTab to proper filename
+
+## Cary on 10/05/15 ##
+*****************************************************************
+runProto.py: run this to start testing
+Arguments
+@script Not used in this file
+@gintvl_val
+@qintvl_val
+@depth_level
+@numbatch
+@name
+
+Classes
+build_plane(numOfBatch,gintvl,qintvl,depth)
+
+Imports
+landscape
+
+Calls
+landscape.create_map()
+
+Output
+.csv in /hypercubes
+****************************************************************
+landscape.py
+Arguments
+
+Classes
+scale_param(lname,val)
+scale_val(lname)
+_is_neighbor(p1,p2)
+create_map(method='grid'.**kwargs)
+	"""
+	The map is represented by a dictionary that has form of {point: [neighbors]}.
+	Each point is a representation of a prototxt file with preset noise parameters.
+	Neighbors are defined as the points with only one layer's param changed.
+	Inputs: 
+		intvl: the discreteness of the data points.
+		range: indicates the start and end point of param interval.
+	"""
+_grid_search_alex(g_intvl,g_range,q_intvl,q_range,depth)
+_grid_search_goog(g_intvl,g_range,q_intvl,q_range,depth)
+
+Imports
+addNoiseDeploy as adder
+
+Calls
+
+Output
+
+****************************************************************
+runProtoPoint.py && landpoint.py: running using a single SNR point
+
+****************************************************************
+Stats.py: output match5 and match1 numbers
+Classes
+getTopStats(foldername,numImagesPerBatch,batches)

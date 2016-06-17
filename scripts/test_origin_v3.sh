@@ -1,0 +1,1 @@
+caffe test -model ../prototxt/test/origin/goog_v3_test.prototxt -weights ../models/goog_v3/goog_v3_iter_10000.caffemodel -gpu 0 -iterations 100

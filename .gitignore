@@ -1,0 +1,15 @@
+**/.DS_Store
+/data/db/*
+/data/pics/*
+/caffe/build/*
+**/*.caffemodel
+**/*.solverstate
+**/nohup.out
+**/*~
+/prototxt/*
+**/*.ipynb
+**/*.pyc
+**/*.csv
+**/*.png
+/configs/*
+**/caffe.proto

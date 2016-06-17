@@ -1,0 +1,65 @@
+dasf
+Goodmonr
+ads
+xc
+asdoisadsfdas dsfewsd
+
+cv
+cbbv
+df
+// Message that stores parameters used to control the 
+// behavior of energy loss evaluation.
+message EnergyLossParameter {
+  enum ModelType {
+    LINEAR = 0;
+    SQUARE_INVERSE = 1;
+    RESERVED = 2;
+  }
+  // the model for energy loss estimation
+  optional ModelType model = 1 [default = LINEAR];
+  // the trade-off scaling factor between energy and accuracy
+  optional float alpha = 2 [default = 1.0];
+  repeated int32 ParamType = 3;
+}
+
+// Message that stores parameters used to add noise to the 
+// neighboring layer output
+message NoiseParameter {
+  enum NoiseType {
+    GAUSSIAN = 0;
+    POISSON = 1;
+    UNIFORM = 2;
+    RESERVED = 3;
+  }
+  optional bool pass = 1 [default = false];
+  optional NoiseType ntype = 2 [default = GAUSSIAN];
+  optional GaussianNoiseParameter gaussian_param = 3;
+  optional PoissonNoiseParameter poisson_param = 4;
+  optional UniformNoiseParameter uniform_param = 5;
+  optional float diff_scale = 6 [default = 1.0];
+  // attachment location indicator
+}
+
+// Message that stores parameters to generate Gaussian noise
+message GaussianNoiseParameter {
+  optional float mean = 1 [default = 0.0];
+  optional float stddev = 2 [default = 0.0];
+  optional float min_sd = 3 [default = -1000.0];
+  optional float max_sd = 4 [default = 1000.0];
+  optional float scale = 5 [default = 1.0];
+}
+
+// Message that stores parameters to generate uniform random noise
+message UniformNoiseParameter {
+  optional float min_u = 1 [default = -1.0];
+  optional float max_u = 2 [default = 1.0];
+  optional float scale = 3 [default = 1.0];
+}
+
+// Message that stores parameters to generate poisson random noise
+message PoissonNoiseParameter {
+  optional float lambda = 1 [default = 0.0];
+  optional float norm = 2 [default = 255.0];
+  optional float scale = 3 [default = 1.0];
+}
+

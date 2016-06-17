@@ -1,0 +1,1 @@
+Makesure there are two files called "train.txt" and "val.txt" stored under corresponding dataset folders, which contain labels for training and validation pictures.
