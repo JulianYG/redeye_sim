@@ -22,6 +22,13 @@ def quantize_params(net, bitnum, depth=5):
 				_digitize(blob.data, bitnum)
 
 def _digitize(data, bnum):
+	"""
+	Digitize the given data with bnum of bits. Note that
+	here we remove outliers by assuming a gaussian distribution
+	of data. The number 3 is arbitrary in this case, and generally
+	the data may not follow gaussian distribution. Subject to 
+	change: uniform dist
+	"""
 	i = data.std()*6/(2.**bnum - 1)
 	minVal = data.min()
 	if minVal < data.mean() - 3 * data.std():
