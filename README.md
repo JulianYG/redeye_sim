@@ -23,9 +23,9 @@
 `redeye_sim/simulation` contains workflows to train the models (`tune.py`) and generates statistics (`validate.py`) for their performance. The workflows automatically inject noise layers to existing models, simulating analog noise behavior. Each workflow sweeps through a range of given noise SNRs, configured as follows:
 - Configure datapath directories, batch sizes, and data layer noise in `configs/data.config`. Recommended: use soft links for large data files.
 - Configure parameter intervals and prototxt templates in `configs/run.config`. 
-  *Specify the sweeping interval of Gaussian noise “gaussian_intvl” and uniform noise “uniform_intvl”, which represents circuit noise and ADC noise, respectively. 
-  *Specify the digitization bit-resolution “digitization_bits” of fixed-point weights.
-  *Specify the depth (number of convolution layers)  “depth” of analog execution.
+  * Specify the sweeping interval of Gaussian noise “gaussian_intvl” and uniform noise “uniform_intvl”, which represents circuit noise and ADC noise, respectively. 
+  * Specify the digitization bit-resolution “digitization_bits” of fixed-point weights.
+  * Specify the depth (number of convolution layers)  “depth” of analog execution.
 
 `redeye_sim/simulation` also contains a `workflow.py` to procedurally train and test models in the SNR ranges. An example run of the complete workflow: under `/simulation`, execute ```python workflow.py --test_iter 500 --tune_iter 12000 --dest ../stats/test.csv --g 15,30 --q 15,25```. This will sweep the SNR space and run fine tune for each noise-contaminated model for 12000 iterations, write results to `test.csv`, and save the `test.png` plot under `plots` folder. 
 After too many runs, you can run `/tools/cleaner.sh` to clean up the messy .prototxt’s and .caffemodel’s if you do not need them anymore. (Keep them if you want to save time running later)
