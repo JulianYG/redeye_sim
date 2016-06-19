@@ -20,14 +20,14 @@ pretrained_model = dir_config['pretrained_model']
 gaussian_interval = dir_config['gaussian_intvl']
 uniform_interval = dir_config['uniform_intvl']
 depth = dir_config['depth']
-quantization_bits = dir_config['quantization_bits']
+digitization_bits = dir_config['digitization_bits']
 
 argv = argparse.ArgumentParser(description='Sweep SNR space, train and generate plots')
 argv.add_argument('--test_iter', type=int, help='number of iterations for testing', required=True)
 argv.add_argument('--tune_iter', type=int, help='number of iterations for fine tuning', required=True)
 argv.add_argument('--dest', type=str, help='complete store path of stat csv file', required=True)
-argv.add_argument('--g', type=grammar._range_format, help='gaussian SNR range', required=True)
-argv.add_argument('--q', type=grammar._range_format, help='quantization layer SNR range', required=True)
+argv.add_argument('--g', type=grammar._range_format, help='gaussian noise layer SNR range', required=True)
+argv.add_argument('--q', type=grammar._range_format, help='uniform noise layer SNR range', required=True)
 
 arg = argv.parse_args()
 result_filename = arg.dest
@@ -49,7 +49,7 @@ solvers, models = utils.write_solver_prototxt(solver_prototxt_template,
 
 # save the original testing results on model with noise inserted only in data layer
 control_net = caffe.Net(train_prototxt_template, pretrained_model, caffe.TEST)
-utils.quantize_params(control_net, quantization_bits, depth=depth)
+utils.digitize_params(control_net, digitization_bits, depth=depth)
 utils.append_to_csv("0_0_0_0", utils.test_accuracy(control_net,
 	test_iter), result_filename)
 del(control_net)
@@ -60,7 +60,7 @@ for i in range(len(solvers)):
 		os.system('../caffe/build/tools/caffe train --solver=' + solver + \
 			' -weights ' + pretrained_model)
 	finet = caffe.Net(train_list[i], models[i], caffe.TEST)
-	utils.quantize_params(finet, quantization_bits, depth=depth)
+	utils.digitize_params(finet, digitization_bits, depth=depth)
 	# write intermediate results to file
 	proto_filename = os.path.basename(train_list[i]).split('.')[0].split('_')\
 		[:-(depth + 2):-1]

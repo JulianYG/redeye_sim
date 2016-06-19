@@ -15,11 +15,11 @@ train_prototxt_template = dir_config['train_prototxt_template']
 pretrained_model = dir_config['pretrained_model']#'../models/googlenet/goog_gamma.caffemodel'
 save_name = '../stats/data_clean'
 
-argv = argparse.ArgumentParser(description='Sweep SNR on image input, quantization bits on depth for testing')
+argv = argparse.ArgumentParser(description='Sweep SNR on image input, digitization bits on depth for testing')
 argv.add_argument('--i', type=int, help='SNR interval', required=True)
 argv.add_argument('--s', type=grammar._range_format, help='SNR range, e.g. 10,60', required=True)
 argv.add_argument('--test_iter', type=int, help='number of iterations for testing', required=True)
-argv.add_argument('--qb', type=grammar._range_format, help='quantization bits range, e.g. 6,8', required=True)
+argv.add_argument('--qb', type=grammar._range_format, help='digitization bits range, e.g. 6,8', required=True)
 argv.add_argument('--d', type=int, help='depth of digitizing learned layer weights', required=True)
 argv.add_argument('--g', type=float, help='gamma constant for uncorrection', required=False)
 argv.add_argument('--n', type=str, help='noise type: gaussian or uniform', required=True)
@@ -28,7 +28,7 @@ qb_low, qb_high = grammar.parse_rf(arg.qb)
 snr_low, snr_high = grammar.parse_rf(arg.s)
 depth = arg.d
 noise_type = arg.n
-quantization_bits = range(qb_low, qb_high + 1)
+digitization_bits = range(qb_low, qb_high + 1)
 SNR = range(snr_low, snr_high + 1, arg.i)
 i = arg.i
 iter_num = arg.test_iter
@@ -40,9 +40,9 @@ protos = pw.snr_data_sweep(SNR, i, gamma, noise_type,
 	template='../prototxt/train/origin/goog_val_data.prototxt')
 
 for proto in protos:
-	for q in quantization_bits:
+	for q in digitization_bits:
 		net = caffe.Net(proto, pretrained_model, caffe.TEST)
-		utils.quantize_params(net, q, depth=depth)
+		utils.digitize_params(net, q, depth=depth)
 		proto_snr = os.path.basename(proto).split('.')[0].split('_')[3]
 		utils.append_to_csv(str(proto_snr) + "_" + str(q), 
 			utils.test_accuracy(net, iter_num), save_name +'.csv')

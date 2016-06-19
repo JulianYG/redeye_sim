@@ -10,13 +10,13 @@ from caffe.proto import caffe_pb2
 caffe.set_mode_gpu()
 # initialization
 
-def snr_sweep(gaussian_param_range, g_intvl, quantization_param_range, 
+def snr_sweep(gaussian_param_range, g_intvl, uniform_param_range, 
 		q_intvl, depth, template="../prototxt/train/origin/goog_train_val.prototxt"):
 	"""
 	Given range of parameters and depth, generate the sweeping prototxts and write
 	them to given save path. Note that noise params are given in SNR dBs.
 	Returns the list of names of generated prototxts. Note that SNR values for
-	gaussian noise layers are hold still, with variations on quantization layers
+	gaussian noise layers are hold still, with variations on uniform noise layers
 	"""
 	train_net = caffe_pb2.NetParameter()
 	proto.Merge((open(template).read()), train_net)
@@ -24,8 +24,8 @@ def snr_sweep(gaussian_param_range, g_intvl, quantization_param_range,
 		caffe.TRAIN)
 	net.forward()
 	# Next enumerate the sweep range
-	uniform_param_array = np.arange(quantization_param_range[0], 
-		quantization_param_range[1], q_intvl)
+	uniform_param_array = np.arange(uniform_param_range[0], 
+		uniform_param_range[1], q_intvl)
 	gaussian_param_array = np.arange(gaussian_param_range[0], 
 		gaussian_param_range[1], g_intvl)
 	param_list, name_list = [], []
@@ -79,7 +79,7 @@ def snr_data_sweep(data_snr_range, intvl, gamma, noise_type,
 	return name_list
 
 
-def snr_full_sweep(gaussian_param_range, g_intvl, quantization_param_range, 
+def snr_full_sweep(gaussian_param_range, g_intvl, uniform_param_range, 
 		q_intvl, depth, template="../prototxt/train/origin/goog_train_val.prototxt"):
 	"""
 	Given range of parameters and depth, generate the sweeping prototxts and write
@@ -92,8 +92,8 @@ def snr_full_sweep(gaussian_param_range, g_intvl, quantization_param_range,
 		caffe.TRAIN)
 	net.forward() 
 	# Next enumerate the sweep range
-	uniform_param_array = np.arange(quantization_param_range[0], 
-		quantization_param_range[1], q_intvl)
+	uniform_param_array = np.arange(uniform_param_range[0], 
+		uniform_param_range[1], q_intvl)
 	range_list = [uniform_param_array]
 	for i in range(depth):
 		range_list.append(np.arange(gaussian_param_range[0], 
@@ -229,7 +229,7 @@ def _get_noise_layer(layer_name, noise_type, raw_param, net_blobs):
 		return _construct_noise_layer(_construct_gaussian_noise(0, param))
 	if noise_type == "uniform":
 		param = _scale_uniform_param(raw_param, pool)
-		return _construct_noise_layer(_construct_quantization_noise(-param, param))
+		return _construct_noise_layer(_construct_uniform_noise(-param, param))
 
 def _get_top_layers(bottom, layers):
 	"""
@@ -308,10 +308,10 @@ def _construct_gaussian_noise(mean, stddev, is_pass=1,
 	return caffe_pb2.NoiseParameter(ntype=0, forward_only=is_pass, 
 		gaussian_param=gNoise, diff_scale=ds)
 
-def _construct_quantization_noise(minimum, maximum, 
+def _construct_uniform_noise(minimum, maximum, 
 	is_pass=1, scale=1.0, ds=1.0):
 	"""
-	Given uniform random range for quantization error, generate NoiseParameter
+	Given uniform random range for uniform noise error, generate NoiseParameter
 	"""
 	qNoise = caffe_pb2.UniformNoiseParameter(min_u=minimum, max_u=maximum, scale=scale)
 	return caffe_pb2.NoiseParameter(ntype=2, forward_only=is_pass, 

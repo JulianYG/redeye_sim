@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from collections import OrderedDict
 
-def quantize_params(net, bitnum, depth=5):
+def digitize_params(net, bitnum, depth=5):
 	"""
 	Given path to train prototxt and trained models for 
 	fine tuning parameters, and number of bits for 
@@ -39,7 +39,7 @@ def _digitize(data, bnum):
 	# clamp the data
 	data[data > maxVal] = maxVal
 	data[data < minVal] = minVal
-	# quantize the data
+	# digitize the data
 	data = i * np.floor((data - minVal) / i) + minVal
 
 def write_solver_prototxt(template, train_prototxt, maxiter, 
@@ -92,17 +92,17 @@ def append_to_csv(name, acc, filename):
 def row2col(raw_stat):
 	processed_stat = OrderedDict()
 	for key, value in raw_stat.items():
-		quant_snr = key[-1]
-		if quant_snr not in processed_stat:
+		uniform_snr = key[-1]
+		if uniform_snr not in processed_stat:
 			d = {}
 			for loss_type, acc in value.items():
 				if loss_type not in d:
 					d[loss_type] = {}
 				d[loss_type][key[0]] = acc
-			processed_stat[quant_snr] = d
+			processed_stat[uniform_snr] = d
 		else:
 			for loss_type, acc in value.items():
-				processed_stat[quant_snr][loss_type][key[0]] = acc
+				processed_stat[uniform_snr][loss_type][key[0]] = acc
 	return processed_stat
 
 def plot_results(filename, plot_dir):
@@ -124,8 +124,8 @@ def plot_results(filename, plot_dir):
 			for x, y in zip(xs, ys):
 				ax.text(x, qSNR, y, '%2.2f'%y, ha='left', va='bottom')
 
-	ax.set_xlabel('Gaussian SNR (dB)')
-	ax.set_ylabel('Quantization SNR (dB)')
+	ax.set_xlabel('Gaussian Noise SNR (dB)')
+	ax.set_ylabel('Uniform Noise SNR (dB)')
 	ax.set_zlabel('Testing Accuracy')
 	#plt.legend()
 	plt.show()
