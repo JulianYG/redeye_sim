@@ -19,7 +19,7 @@
 - Download the ImageNet dataset. Execute `create_lmdb.sh` to generate lmdb files for train and validation.
 - Download the pre-trained GoogLeNet caffemodel. Note: keep paths in `data.config` consistent when making data and run workflow.
 
-## Tuning and testing
+## Tuning and Testing
 `redeye_sim/simulation` contains workflows to train the models (`tune.py`) and generates statistics (`validate.py`) for their performance. The workflows automatically inject noise layers to existing models, simulating analog noise behavior. Each workflow sweeps through a range of given noise SNRs, configured as follows:
 - Configure datapath directories, batch sizes, and data layer noise in `configs/data.config`. Recommended: use soft links for large data files.
 - Configure parameter intervals and prototxt templates in `configs/run.config`. 
